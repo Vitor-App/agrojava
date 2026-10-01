@@ -5,6 +5,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         double[] chuvas = new double[7];
         double[][] umidades = new double[4][4];
+        boolean dadosCadastrados = false;
         int opcao;
 
         do {
@@ -14,6 +15,12 @@ public class Main {
             System.out.println("3 - Relatorio de Alertas de Irrigacao");
             System.out.println("4 - Sair");
             System.out.print("Escolha uma opcao: ");
+
+            while (!scanner.hasNextInt()) {
+                System.out.println("Opcao invalida. Digite um numero de 1 a 4.");
+                scanner.next();
+                System.out.print("Escolha uma opcao: ");
+            }
             opcao = scanner.nextInt();
 
             switch (opcao) {
@@ -22,8 +29,7 @@ public class Main {
                     int diaMaisChuvoso = 0;
 
                     for (int i = 0; i < chuvas.length; i++) {
-                        System.out.print("Chuva do dia " + (i + 1) + " em mm: ");
-                        chuvas[i] = scanner.nextDouble();
+                        chuvas[i] = lerNumeroEntre(scanner, "Chuva do dia " + (i + 1) + " em mm: ", 0, Double.MAX_VALUE);
                         totalChuva = totalChuva + chuvas[i];
 
                         if (chuvas[i] > chuvas[diaMaisChuvoso]) {
@@ -33,30 +39,39 @@ public class Main {
 
                     for (int linha = 0; linha < umidades.length; linha++) {
                         for (int coluna = 0; coluna < umidades[linha].length; coluna++) {
-                            System.out.print("Umidade do talhao [" + (linha + 1) + "][" + (coluna + 1) + "] em %: ");
-                            umidades[linha][coluna] = scanner.nextDouble();
+                            umidades[linha][coluna] = lerNumeroEntre(scanner,
+                                    "Umidade do talhao [" + (linha + 1) + "][" + (coluna + 1) + "] em %: ", 0, 100);
                         }
                     }
 
+                    dadosCadastrados = true;
                     System.out.printf("Media semanal de chuva: %.2f mm%n", totalChuva / chuvas.length);
                     System.out.println("Dia com maior chuva: dia " + (diaMaisChuvoso + 1));
                     System.out.println("Dados cadastrados.");
                     break;
                 case 2:
-                    System.out.println("Mapa de umidade:");
-                    for (int linha = 0; linha < umidades.length; linha++) {
-                        for (int coluna = 0; coluna < umidades[linha].length; coluna++) {
-                            System.out.printf("%.1f%% ", umidades[linha][coluna]);
+                    if (!dadosCadastrados) {
+                        System.out.println("Cadastre os dados primeiro.");
+                    } else {
+                        System.out.println("Mapa de umidade:");
+                        for (int linha = 0; linha < umidades.length; linha++) {
+                            for (int coluna = 0; coluna < umidades[linha].length; coluna++) {
+                                System.out.printf("%.1f%% ", umidades[linha][coluna]);
+                            }
+                            System.out.println();
                         }
-                        System.out.println();
                     }
                     break;
                 case 3:
-                    System.out.println("Talhoes que precisam de irrigacao:");
-                    for (int linha = 0; linha < umidades.length; linha++) {
-                        for (int coluna = 0; coluna < umidades[linha].length; coluna++) {
-                            if (umidades[linha][coluna] < 30) {
-                                System.out.println("Talhao [" + (linha + 1) + "][" + (coluna + 1) + "]");
+                    if (!dadosCadastrados) {
+                        System.out.println("Cadastre os dados primeiro.");
+                    } else {
+                        System.out.println("Talhoes que precisam de irrigacao:");
+                        for (int linha = 0; linha < umidades.length; linha++) {
+                            for (int coluna = 0; coluna < umidades[linha].length; coluna++) {
+                                if (umidades[linha][coluna] < 30) {
+                                    System.out.println("Talhao [" + (linha + 1) + "][" + (coluna + 1) + "]");
+                                }
                             }
                         }
                     }
@@ -70,5 +85,22 @@ public class Main {
         } while (opcao != 4);
 
         scanner.close();
+    }
+
+    public static double lerNumeroEntre(Scanner scanner, String mensagem, double minimo, double maximo) {
+        double valor;
+        do {
+            System.out.print(mensagem);
+            while (!scanner.hasNextDouble()) {
+                System.out.println("Valor invalido. Digite um numero.");
+                scanner.next();
+                System.out.print(mensagem);
+            }
+            valor = scanner.nextDouble();
+            if (valor < minimo || valor > maximo) {
+                System.out.println("Valor fora do limite permitido.");
+            }
+        } while (valor < minimo || valor > maximo);
+        return valor;
     }
 }
