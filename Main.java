@@ -99,10 +99,10 @@ public class Main {
                 System.out.print(mensagem);
             }
             valor = scanner.nextDouble();
-            if (valor < minimo || valor > maximo) {
+            if (!Double.isFinite(valor) || valor < minimo || valor > maximo) {
                 System.out.println("Valor fora do limite permitido.");
             }
-        } while (valor < minimo || valor > maximo);
+        } while (!Double.isFinite(valor) || valor < minimo || valor > maximo);
         return valor;
     }
 }
