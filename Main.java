@@ -68,14 +68,20 @@ public class Main {
                     if (!dadosCadastrados) {
                         System.out.println("Cadastre os dados primeiro.");
                     } else {
+                        int quantidadeAlertas = 0;
                         System.out.println("Talhoes que precisam de irrigacao:");
                         for (int linha = 0; linha < umidades.length; linha++) {
                             for (int coluna = 0; coluna < umidades[linha].length; coluna++) {
                                 if (umidades[linha][coluna] < 30) {
                                     System.out.println("Talhao [" + (linha + 1) + "][" + (coluna + 1) + "]");
+                                    quantidadeAlertas++;
                                 }
                             }
                         }
+                        if (quantidadeAlertas == 0) {
+                            System.out.println("Nenhum talhao precisa de irrigacao.");
+                        }
+                        System.out.println("Total de talhoes em alerta: " + quantidadeAlertas);
                     }
                     break;
                 case 4:
