@@ -54,7 +54,9 @@ public class Main {
                         System.out.println("Cadastre os dados primeiro.");
                     } else {
                         System.out.println("Mapa de umidade:");
+                        System.out.println("       C1     C2     C3     C4");
                         for (int linha = 0; linha < umidades.length; linha++) {
+                            System.out.print("L" + (linha + 1) + "   ");
                             for (int coluna = 0; coluna < umidades[linha].length; coluna++) {
                                 System.out.printf("%.1f%% ", umidades[linha][coluna]);
                             }
