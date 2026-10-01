@@ -18,9 +18,17 @@ public class Main {
 
             switch (opcao) {
                 case 1:
+                    double totalChuva = 0;
+                    int diaMaisChuvoso = 0;
+
                     for (int i = 0; i < chuvas.length; i++) {
                         System.out.print("Chuva do dia " + (i + 1) + " em mm: ");
                         chuvas[i] = scanner.nextDouble();
+                        totalChuva = totalChuva + chuvas[i];
+
+                        if (chuvas[i] > chuvas[diaMaisChuvoso]) {
+                            diaMaisChuvoso = i;
+                        }
                     }
 
                     for (int linha = 0; linha < umidades.length; linha++) {
@@ -29,6 +37,9 @@ public class Main {
                             umidades[linha][coluna] = scanner.nextDouble();
                         }
                     }
+
+                    System.out.printf("Media semanal de chuva: %.2f mm%n", totalChuva / chuvas.length);
+                    System.out.println("Dia com maior chuva: dia " + (diaMaisChuvoso + 1));
                     System.out.println("Dados cadastrados.");
                     break;
                 case 2:
