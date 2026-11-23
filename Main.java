@@ -30,6 +30,7 @@ public class Main {
             System.out.println("4 - Consultar Historico de Chuvas");
             System.out.println("5 - Semana Mais Chuvosa");
             System.out.println("6 - Dashboard Climatico");
+            System.out.println("7 - Relatorio Gerencial da Fazenda");
             System.out.println("0 - Sair");
             System.out.print("Escolha uma opcao: ");
 
@@ -69,6 +70,13 @@ public class Main {
                     break;
                 case 6:
                     gerarDashboardClimatico();
+                    break;
+                case 7:
+                    if (!dadosCadastrados) {
+                        System.out.println("Cadastre os dados primeiro.");
+                    } else {
+                        gerarRelatorioGerencial();
+                    }
                     break;
                 case 0:
                     System.out.println("Sistema encerrado.");
@@ -327,6 +335,63 @@ public class Main {
             System.out.println("Nenhum talhao precisa de irrigacao.");
         }
         System.out.println("Total de alertas: " + quantidadeAlertas);
+    }
+
+    public static String montarRelatorioGerencial() {
+        double soma = 0;
+        int criticos = 0;
+        int atencao = 0;
+        int adequados = 0;
+        int totalTalhoes = 0;
+        int linhaSeco = 0, colunaSeco = 0;
+        int linhaUmido = 0, colunaUmido = 0;
+
+        for (int linha = 0; linha < umidades.length; linha++) {
+            for (int coluna = 0; coluna < umidades[linha].length; coluna++) {
+                double umidade = umidades[linha][coluna];
+                soma = soma + umidade;
+                totalTalhoes++;
+
+                String status = classificarTalhao(umidade);
+                if (status.equals("Critico")) {
+                    criticos++;
+                } else if (status.equals("Atencao")) {
+                    atencao++;
+                } else {
+                    adequados++;
+                }
+
+                if (umidade < umidades[linhaSeco][colunaSeco]) {
+                    linhaSeco = linha;
+                    colunaSeco = coluna;
+                }
+                if (umidade > umidades[linhaUmido][colunaUmido]) {
+                    linhaUmido = linha;
+                    colunaUmido = coluna;
+                }
+            }
+        }
+
+        double media = soma / totalTalhoes;
+        double percentualIrrigacao = (criticos + atencao) * 100.0 / totalTalhoes;
+
+        String relatorio = "";
+        relatorio = relatorio + String.format("Media Geral: %.0f%%%n", media);
+        relatorio = relatorio + "Talhoes Criticos: " + criticos + "\n";
+        relatorio = relatorio + "Talhoes em Atencao: " + atencao + "\n";
+        relatorio = relatorio + "Talhoes Adequados: " + adequados + "\n";
+        relatorio = relatorio + "Necessidade de Irrigacao:\n";
+        relatorio = relatorio + String.format("%.0f%%%n", percentualIrrigacao);
+        relatorio = relatorio + "Talhao mais seco:\n";
+        relatorio = relatorio + String.format("%s - %.0f%%%n", nomeTalhao(linhaSeco, colunaSeco), umidades[linhaSeco][colunaSeco]);
+        relatorio = relatorio + "Talhao mais umido:\n";
+        relatorio = relatorio + String.format("%s - %.0f%%%n", nomeTalhao(linhaUmido, colunaUmido), umidades[linhaUmido][colunaUmido]);
+        return relatorio;
+    }
+
+    public static void gerarRelatorioGerencial() {
+        System.out.println("===== RELATORIO DA FAZENDA =====");
+        System.out.print(montarRelatorioGerencial());
     }
 
     public static double lerNumeroEntre(String mensagem, double minimo, double maximo) {
