@@ -261,14 +261,25 @@ public class Main {
         return letra + "" + (coluna + 1);
     }
 
+    public static String classificarTalhao(double umidade) {
+        if (umidade < 20) {
+            return "Critico";
+        } else if (umidade <= 30) {
+            return "Atencao";
+        } else {
+            return "Adequado";
+        }
+    }
+
     public static void salvarMapaTalhoes() {
         try {
             BufferedWriter escritor = new BufferedWriter(new FileWriter("talhoes.csv"));
-            escritor.write("talhao,umidade");
+            escritor.write("talhao,umidade,status");
             escritor.newLine();
             for (int linha = 0; linha < umidades.length; linha++) {
                 for (int coluna = 0; coluna < umidades[linha].length; coluna++) {
-                    escritor.write(nomeTalhao(linha, coluna) + "," + formatarNumero(umidades[linha][coluna]));
+                    double umidade = umidades[linha][coluna];
+                    escritor.write(nomeTalhao(linha, coluna) + "," + formatarNumero(umidade) + "," + classificarTalhao(umidade));
                     escritor.newLine();
                 }
             }
@@ -281,13 +292,22 @@ public class Main {
 
     public static void exibirMapa() {
         System.out.println("Mapa de umidade:");
-        System.out.println("       1      2      3      4");
+        System.out.println("          1        2        3        4");
         for (int linha = 0; linha < umidades.length; linha++) {
-            System.out.print((char) ('A' + linha) + "   ");
+            System.out.print((char) ('A' + linha) + " ");
             for (int coluna = 0; coluna < umidades[linha].length; coluna++) {
-                System.out.printf("%.1f%% ", umidades[linha][coluna]);
+                System.out.printf("%8.1f%%", umidades[linha][coluna]);
             }
             System.out.println();
+        }
+
+        System.out.println();
+        System.out.println("Classificacao dos talhoes:");
+        for (int linha = 0; linha < umidades.length; linha++) {
+            for (int coluna = 0; coluna < umidades[linha].length; coluna++) {
+                double umidade = umidades[linha][coluna];
+                System.out.printf("%s - %.1f%% - %s%n", nomeTalhao(linha, coluna), umidade, classificarTalhao(umidade));
+            }
         }
     }
 
