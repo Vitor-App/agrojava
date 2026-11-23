@@ -78,6 +78,11 @@ public class Main {
     public static void cadastrarChuvas() {
         System.out.print("Data da semana (dd/mm/aaaa): ");
         String data = scanner.next();
+        while (!data.matches("\\d{2}/\\d{2}/\\d{4}")) {
+            System.out.println("Data invalida. Use o formato dd/mm/aaaa.");
+            System.out.print("Data da semana (dd/mm/aaaa): ");
+            data = scanner.next();
+        }
 
         double totalChuva = 0;
         int diaMaisChuvoso = 0;
@@ -143,7 +148,9 @@ public class Main {
             BufferedReader leitor = new BufferedReader(new FileReader(arquivo));
             String linha = leitor.readLine();
             while ((linha = leitor.readLine()) != null) {
-                linhas.add(linha);
+                if (linha.split(",").length == 10) {
+                    linhas.add(linha);
+                }
             }
             leitor.close();
         } catch (IOException e) {
