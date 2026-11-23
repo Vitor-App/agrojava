@@ -1,6 +1,6 @@
 # Como executar o AgroJava
 
-O AgroJava é um programa simples de terminal feito em Java. Ele utiliza `Scanner`, um array de sete posições para as chuvas e uma matriz 4x4 para a umidade dos talhões.
+O AgroJava é um programa simples de terminal feito em Java. Ele utiliza `Scanner`, um array de sete posições para as chuvas, uma matriz 4x4 para a umidade dos talhões e arquivos CSV para guardar os dados.
 
 ## Compilar
 
@@ -18,8 +18,24 @@ Depois da compilação, execute:
 java Main
 ```
 
+## Menu
+
+```
+1 - Cadastrar Dados
+2 - Exibir Mapa do Campo
+3 - Relatorio de Alertas de Irrigacao
+4 - Consultar Historico de Chuvas
+5 - Semana Mais Chuvosa
+6 - Dashboard Climatico
+7 - Relatorio Gerencial da Fazenda
+8 - Exportar Relatorio
+0 - Sair
+```
+
 ## Funcionamento
 
-Escolha a opção 1 para cadastrar os sete volumes de chuva e as umidades dos 16 talhões. Depois do cadastro, a opção 2 mostra o mapa formatado e a opção 3 lista os talhões com umidade abaixo de 30%. A opção 4 encerra o programa.
+Na opção 1 o programa pede a data da semana (dd/mm/aaaa), a chuva de segunda a domingo e a umidade dos 16 talhões. A semana é acrescentada no arquivo `chuvas.csv` e o mapa é salvo em `talhoes.csv`. Os arquivos são criados automaticamente na mesma pasta do programa.
 
-O sistema aceita chuva entre 0 mm e o maior valor numérico permitido e umidade entre 0% e 100%. Entradas inválidas são solicitadas novamente.
+As opções 4, 5 e 6 usam o histórico salvo em `chuvas.csv`. As opções 2, 3, 7 e 8 usam o mapa de umidade, que é carregado do `talhoes.csv` quando o programa inicia. A opção 8 gera o arquivo `relatorio_fazenda.txt`.
+
+O sistema aceita chuva a partir de 0 mm e umidade entre 0% e 100%. Entradas inválidas são solicitadas novamente.
