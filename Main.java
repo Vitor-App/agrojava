@@ -313,11 +313,12 @@ public class Main {
 
     public static void gerarRelatorioIrrigacao() {
         int quantidadeAlertas = 0;
-        System.out.println("Talhoes que precisam de irrigacao:");
+        System.out.println("===== ALERTAS =====");
         for (int linha = 0; linha < umidades.length; linha++) {
             for (int coluna = 0; coluna < umidades[linha].length; coluna++) {
-                if (umidades[linha][coluna] < 30) {
-                    System.out.println("Talhao " + nomeTalhao(linha, coluna));
+                String status = classificarTalhao(umidades[linha][coluna]);
+                if (status.equals("Critico") || status.equals("Atencao")) {
+                    System.out.println(nomeTalhao(linha, coluna) + " - " + status);
                     quantidadeAlertas++;
                 }
             }
@@ -325,7 +326,7 @@ public class Main {
         if (quantidadeAlertas == 0) {
             System.out.println("Nenhum talhao precisa de irrigacao.");
         }
-        System.out.println("Total de talhoes em alerta: " + quantidadeAlertas);
+        System.out.println("Total de alertas: " + quantidadeAlertas);
     }
 
     public static double lerNumeroEntre(String mensagem, double minimo, double maximo) {
