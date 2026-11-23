@@ -17,6 +17,7 @@ public class Main {
     static boolean dadosCadastrados = false;
 
     public static void main(String[] args) {
+        carregarMapaTalhoes();
         menuPrincipal();
         scanner.close();
     }
@@ -277,6 +278,32 @@ public class Main {
     public static String nomeTalhao(int linha, int coluna) {
         char letra = (char) ('A' + linha);
         return letra + "" + (coluna + 1);
+    }
+
+    public static void carregarMapaTalhoes() {
+        File arquivo = new File("talhoes.csv");
+        if (!arquivo.exists()) {
+            return;
+        }
+
+        try {
+            BufferedReader leitor = new BufferedReader(new FileReader(arquivo));
+            String linha = leitor.readLine();
+            int contador = 0;
+            while ((linha = leitor.readLine()) != null && contador < 16) {
+                String[] campos = linha.split(",");
+                umidades[contador / 4][contador % 4] = Double.parseDouble(campos[1]);
+                contador++;
+            }
+            leitor.close();
+
+            if (contador == 16) {
+                dadosCadastrados = true;
+                System.out.println("Mapa de umidade carregado do arquivo talhoes.csv");
+            }
+        } catch (Exception e) {
+            System.out.println("Nao foi possivel carregar o mapa salvo.");
+        }
     }
 
     public static String classificarTalhao(double umidade) {
