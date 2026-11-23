@@ -249,16 +249,41 @@ public class Main {
         for (int linha = 0; linha < umidades.length; linha++) {
             for (int coluna = 0; coluna < umidades[linha].length; coluna++) {
                 umidades[linha][coluna] = lerNumeroEntre(
-                        "Umidade do talhao [" + (linha + 1) + "][" + (coluna + 1) + "] em %: ", 0, 100);
+                        "Umidade do talhao " + nomeTalhao(linha, coluna) + " em %: ", 0, 100);
             }
+        }
+
+        salvarMapaTalhoes();
+    }
+
+    public static String nomeTalhao(int linha, int coluna) {
+        char letra = (char) ('A' + linha);
+        return letra + "" + (coluna + 1);
+    }
+
+    public static void salvarMapaTalhoes() {
+        try {
+            BufferedWriter escritor = new BufferedWriter(new FileWriter("talhoes.csv"));
+            escritor.write("talhao,umidade");
+            escritor.newLine();
+            for (int linha = 0; linha < umidades.length; linha++) {
+                for (int coluna = 0; coluna < umidades[linha].length; coluna++) {
+                    escritor.write(nomeTalhao(linha, coluna) + "," + formatarNumero(umidades[linha][coluna]));
+                    escritor.newLine();
+                }
+            }
+            escritor.close();
+            System.out.println("Mapa salvo no arquivo talhoes.csv");
+        } catch (IOException e) {
+            System.out.println("Erro ao salvar o mapa de umidade.");
         }
     }
 
     public static void exibirMapa() {
         System.out.println("Mapa de umidade:");
-        System.out.println("       C1     C2     C3     C4");
+        System.out.println("       1      2      3      4");
         for (int linha = 0; linha < umidades.length; linha++) {
-            System.out.print("L" + (linha + 1) + "   ");
+            System.out.print((char) ('A' + linha) + "   ");
             for (int coluna = 0; coluna < umidades[linha].length; coluna++) {
                 System.out.printf("%.1f%% ", umidades[linha][coluna]);
             }
@@ -272,7 +297,7 @@ public class Main {
         for (int linha = 0; linha < umidades.length; linha++) {
             for (int coluna = 0; coluna < umidades[linha].length; coluna++) {
                 if (umidades[linha][coluna] < 30) {
-                    System.out.println("Talhao [" + (linha + 1) + "][" + (coluna + 1) + "]");
+                    System.out.println("Talhao " + nomeTalhao(linha, coluna));
                     quantidadeAlertas++;
                 }
             }
