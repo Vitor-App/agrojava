@@ -1,8 +1,13 @@
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
     static Scanner scanner = new Scanner(System.in);
     static double[] chuvas = new double[7];
+    static String[] diasSemana = {"segunda", "terca", "quarta", "quinta", "sexta", "sabado", "domingo"};
     static double[][] umidades = new double[4][4];
     static boolean dadosCadastrados = false;
 
@@ -60,11 +65,14 @@ public class Main {
     }
 
     public static void cadastrarChuvas() {
+        System.out.print("Data da semana (dd/mm/aaaa): ");
+        String data = scanner.next();
+
         double totalChuva = 0;
         int diaMaisChuvoso = 0;
 
         for (int i = 0; i < chuvas.length; i++) {
-            chuvas[i] = lerNumeroEntre("Chuva do dia " + (i + 1) + " em mm: ", 0, Double.MAX_VALUE);
+            chuvas[i] = lerNumeroEntre("Chuva de " + diasSemana[i] + " em mm: ", 0, Double.MAX_VALUE);
             totalChuva = totalChuva + chuvas[i];
 
             if (chuvas[i] > chuvas[diaMaisChuvoso]) {
@@ -72,8 +80,45 @@ public class Main {
             }
         }
 
-        System.out.printf("Media semanal de chuva: %.2f mm%n", totalChuva / chuvas.length);
-        System.out.println("Dia com maior chuva: dia " + (diaMaisChuvoso + 1));
+        double media = totalChuva / chuvas.length;
+        System.out.printf("Media semanal de chuva: %.2f mm%n", media);
+        System.out.printf("Total de chuva na semana: %.2f mm%n", totalChuva);
+        System.out.println("Dia com maior chuva: " + diasSemana[diaMaisChuvoso]);
+
+        salvarHistoricoChuvas(data, media, totalChuva);
+    }
+
+    public static void salvarHistoricoChuvas(String data, double media, double total) {
+        File arquivo = new File("chuvas.csv");
+        boolean arquivoNovo = !arquivo.exists() || arquivo.length() == 0;
+
+        try {
+            BufferedWriter escritor = new BufferedWriter(new FileWriter(arquivo, true));
+            if (arquivoNovo) {
+                escritor.write("data,seg,ter,qua,qui,sex,sab,dom,media,total");
+                escritor.newLine();
+            }
+
+            String linha = data;
+            for (int i = 0; i < chuvas.length; i++) {
+                linha = linha + "," + formatarNumero(chuvas[i]);
+            }
+            linha = linha + "," + formatarNumero(media) + "," + formatarNumero(total);
+
+            escritor.write(linha);
+            escritor.newLine();
+            escritor.close();
+            System.out.println("Semana salva no arquivo chuvas.csv");
+        } catch (IOException e) {
+            System.out.println("Erro ao salvar o historico de chuvas.");
+        }
+    }
+
+    public static String formatarNumero(double numero) {
+        if (numero == (long) numero) {
+            return String.valueOf((long) numero);
+        }
+        return String.valueOf(Math.round(numero * 10) / 10.0);
     }
 
     public static void cadastrarTalhoes() {
