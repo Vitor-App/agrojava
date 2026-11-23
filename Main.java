@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -31,6 +33,7 @@ public class Main {
             System.out.println("5 - Semana Mais Chuvosa");
             System.out.println("6 - Dashboard Climatico");
             System.out.println("7 - Relatorio Gerencial da Fazenda");
+            System.out.println("8 - Exportar Relatorio");
             System.out.println("0 - Sair");
             System.out.print("Escolha uma opcao: ");
 
@@ -76,6 +79,13 @@ public class Main {
                         System.out.println("Cadastre os dados primeiro.");
                     } else {
                         gerarRelatorioGerencial();
+                    }
+                    break;
+                case 8:
+                    if (!dadosCadastrados) {
+                        System.out.println("Cadastre os dados primeiro.");
+                    } else {
+                        exportarRelatorio();
                     }
                     break;
                 case 0:
@@ -392,6 +402,23 @@ public class Main {
     public static void gerarRelatorioGerencial() {
         System.out.println("===== RELATORIO DA FAZENDA =====");
         System.out.print(montarRelatorioGerencial());
+    }
+
+    public static void exportarRelatorio() {
+        String data = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+        try {
+            BufferedWriter escritor = new BufferedWriter(new FileWriter("relatorio_fazenda.txt"));
+            escritor.write("===== RELATORIO DA FAZENDA =====");
+            escritor.newLine();
+            escritor.write("Data: " + data);
+            escritor.newLine();
+            escritor.write(montarRelatorioGerencial());
+            escritor.close();
+            System.out.println("Relatorio exportado para relatorio_fazenda.txt");
+        } catch (IOException e) {
+            System.out.println("Erro ao exportar o relatorio.");
+        }
     }
 
     public static double lerNumeroEntre(String mensagem, double minimo, double maximo) {
