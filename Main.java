@@ -28,6 +28,7 @@ public class Main {
             System.out.println("2 - Exibir Mapa do Campo");
             System.out.println("3 - Relatorio de Alertas de Irrigacao");
             System.out.println("4 - Consultar Historico de Chuvas");
+            System.out.println("5 - Semana Mais Chuvosa");
             System.out.println("0 - Sair");
             System.out.print("Escolha uma opcao: ");
 
@@ -61,6 +62,9 @@ public class Main {
                     break;
                 case 4:
                     consultarHistoricoChuvas();
+                    break;
+                case 5:
+                    identificarSemanaMaisChuvosa();
                     break;
                 case 0:
                     System.out.println("Sistema encerrado.");
@@ -163,6 +167,30 @@ public class Main {
             System.out.println("Total: " + campos[9] + " mm");
             System.out.println();
         }
+    }
+
+    public static void identificarSemanaMaisChuvosa() {
+        ArrayList<String> linhas = lerHistoricoChuvas();
+        if (linhas.size() == 0) {
+            System.out.println("Nenhuma semana cadastrada.");
+            return;
+        }
+
+        String semanaMaior = "";
+        double maiorTotal = -1;
+        for (int i = 0; i < linhas.size(); i++) {
+            String[] campos = linhas.get(i).split(",");
+            double total = Double.parseDouble(campos[9]);
+            if (total > maiorTotal) {
+                maiorTotal = total;
+                semanaMaior = campos[0];
+            }
+        }
+
+        System.out.println("Semana mais chuvosa:");
+        System.out.println(semanaMaior);
+        System.out.println("Total:");
+        System.out.println(formatarNumero(maiorTotal) + " mm");
     }
 
     public static void cadastrarTalhoes() {
