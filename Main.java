@@ -29,6 +29,7 @@ public class Main {
             System.out.println("3 - Relatorio de Alertas de Irrigacao");
             System.out.println("4 - Consultar Historico de Chuvas");
             System.out.println("5 - Semana Mais Chuvosa");
+            System.out.println("6 - Dashboard Climatico");
             System.out.println("0 - Sair");
             System.out.print("Escolha uma opcao: ");
 
@@ -65,6 +66,9 @@ public class Main {
                     break;
                 case 5:
                     identificarSemanaMaisChuvosa();
+                    break;
+                case 6:
+                    gerarDashboardClimatico();
                     break;
                 case 0:
                     System.out.println("Sistema encerrado.");
@@ -198,6 +202,47 @@ public class Main {
         System.out.println(semanaMaior);
         System.out.println("Total:");
         System.out.println(formatarNumero(maiorTotal) + " mm");
+    }
+
+    public static void gerarDashboardClimatico() {
+        ArrayList<String> linhas = lerHistoricoChuvas();
+        if (linhas.size() == 0) {
+            System.out.println("Nenhuma semana cadastrada.");
+            return;
+        }
+
+        double volumeTotal = 0;
+        double maiorChuva = -1;
+        double menorChuva = Double.MAX_VALUE;
+        String semanaMaisChuvosa = "";
+        String semanaMaisSeca = "";
+
+        for (int i = 0; i < linhas.size(); i++) {
+            String[] campos = linhas.get(i).split(",");
+            double total = Double.parseDouble(campos[9]);
+            volumeTotal = volumeTotal + total;
+
+            if (total > maiorChuva) {
+                maiorChuva = total;
+                semanaMaisChuvosa = campos[0];
+            }
+            if (total < menorChuva) {
+                menorChuva = total;
+                semanaMaisSeca = campos[0];
+            }
+        }
+
+        double mediaGeral = volumeTotal / linhas.size();
+
+        System.out.println("===== DASHBOARD =====");
+        System.out.println("Semanas cadastradas: " + linhas.size());
+        System.out.println("Volume acumulado: " + formatarNumero(volumeTotal) + " mm");
+        System.out.println("Maior chuva:");
+        System.out.println(formatarNumero(maiorChuva) + " mm (" + semanaMaisChuvosa + ")");
+        System.out.println("Menor chuva:");
+        System.out.println(formatarNumero(menorChuva) + " mm (" + semanaMaisSeca + ")");
+        System.out.println("Media geral:");
+        System.out.printf("%.1f mm%n", mediaGeral);
     }
 
     public static void cadastrarTalhoes() {
