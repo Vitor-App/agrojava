@@ -1,7 +1,10 @@
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -24,11 +27,12 @@ public class Main {
             System.out.println("1 - Cadastrar Dados");
             System.out.println("2 - Exibir Mapa do Campo");
             System.out.println("3 - Relatorio de Alertas de Irrigacao");
-            System.out.println("4 - Sair");
+            System.out.println("4 - Consultar Historico de Chuvas");
+            System.out.println("0 - Sair");
             System.out.print("Escolha uma opcao: ");
 
             while (!scanner.hasNextInt()) {
-                System.out.println("Opcao invalida. Digite um numero de 1 a 4.");
+                System.out.println("Opcao invalida. Digite um numero do menu.");
                 scanner.next();
                 System.out.print("Escolha uma opcao: ");
             }
@@ -56,12 +60,15 @@ public class Main {
                     }
                     break;
                 case 4:
+                    consultarHistoricoChuvas();
+                    break;
+                case 0:
                     System.out.println("Sistema encerrado.");
                     break;
                 default:
                     System.out.println("Opcao invalida.");
             }
-        } while (opcao != 4);
+        } while (opcao != 0);
     }
 
     public static void cadastrarChuvas() {
@@ -119,6 +126,43 @@ public class Main {
             return String.valueOf((long) numero);
         }
         return String.valueOf(Math.round(numero * 10) / 10.0);
+    }
+
+    public static ArrayList<String> lerHistoricoChuvas() {
+        ArrayList<String> linhas = new ArrayList<>();
+        File arquivo = new File("chuvas.csv");
+        if (!arquivo.exists()) {
+            return linhas;
+        }
+
+        try {
+            BufferedReader leitor = new BufferedReader(new FileReader(arquivo));
+            String linha = leitor.readLine();
+            while ((linha = leitor.readLine()) != null) {
+                linhas.add(linha);
+            }
+            leitor.close();
+        } catch (IOException e) {
+            System.out.println("Erro ao ler o historico de chuvas.");
+        }
+        return linhas;
+    }
+
+    public static void consultarHistoricoChuvas() {
+        ArrayList<String> linhas = lerHistoricoChuvas();
+        if (linhas.size() == 0) {
+            System.out.println("Nenhuma semana cadastrada.");
+            return;
+        }
+
+        System.out.println("===== HISTORICO DE CHUVAS =====");
+        for (int i = 0; i < linhas.size(); i++) {
+            String[] campos = linhas.get(i).split(",");
+            System.out.println("Semana: " + campos[0]);
+            System.out.println("Media: " + campos[8] + " mm");
+            System.out.println("Total: " + campos[9] + " mm");
+            System.out.println();
+        }
     }
 
     public static void cadastrarTalhoes() {
